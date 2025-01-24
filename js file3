@@ -1,0 +1,62 @@
+const display = document.getElementById("display-value");
+const buttons = document.querySelectorAll("button");
+
+let currentInput = "";
+let operator = null;
+let previousOperand = null;
+
+buttons.forEach(button => {
+    button.addEventListener("click", () => {
+        if (button.classList.contains("number")) {
+            currentInput += button.textContent;
+            display.value = currentInput;
+        } else if (button.classList.contains("operator")) {
+            if (previousOperand !== null) {
+                calculate();
+            }
+            operator = button.textContent;
+            previousOperand = currentInput;
+            currentInput = "";
+        } else if (button.classList.contains("equal")) {
+            calculate();
+        } else if (button.classList.contains("clear")) {
+            currentInput = "";
+            previousOperand = null;
+            operator = null;
+            display.value = "";
+        }
+    });
+});
+
+function calculate() {
+    const num1 = parseFloat(previousOperand);
+    const num2 = parseFloat(currentInput);
+
+    if (isNaN(num1) || isNaN(num2)) {
+        display.value = "Error";
+        return;
+    }
+
+    switch (operator) {
+        case "+":
+            currentInput = (num1 + num2).toString();
+            break;
+        case "-":
+            currentInput = (num1 - num2).toString();
+            break;
+        case "*":
+            currentInput = (num1 * num2).toString();
+            break;
+        case "/":
+            if (num2 === 0) {
+                display.value = "Error";
+                return;
+            }
+            currentInput = (num1 / num2).toString();
+            break;
+    }
+
+    previousOperand = null;
+    operator = null;
+    display.value = currentInput;
+}
